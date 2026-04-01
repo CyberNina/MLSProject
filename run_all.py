@@ -1,61 +1,96 @@
-import subprocess
-import sys
 import os
+import subprocess
 import time
+import sys
+from datetime import datetime
 
-# Trova il percorso assoluto della cartella principale (LabML)
+# --- CONFIGURAZIONE PATH ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+RESULTS_DIR = os.path.join(BASE_DIR, "results")
+os.makedirs(RESULTS_DIR, exist_ok=True)
 
-# Lista ordinata di tutti gli script da eseguire
-scripts_to_run = [
-    ("1. Filtraggio Dati Grezzi", "src/main.py"),
-    ("2. Feature Engineering (Windowing)", "src/build_features.py"),
-    ("3. Addestramento Random Forest (Baseline)", "src/train_rf.py"),
-    ("4. Addestramento Deep Learning (MLP)", "src/train_dl.py"),
-    ("5. Simulazione Real-Time (RF vs DL)", "src/predict.py"),
-    ("6. Test di Robustezza (Attacchi Avversari)", "attacks/advers_attack.py"),
-    ("7. Generazione Grafici Finali", "src/visualize_results.py")
+# Il file dove verranno salvati tutti gli output (sovrascritto ogni volta)
+LOG_FILE = os.path.join(RESULTS_DIR, "pipeline_report.txt")
+
+# =============================================================================
+# CLASSE LOGGER: Intercetta l'output e lo scrive sia a video che nel file .txt
+# =============================================================================
+class Logger:
+    def __init__(self, filename):
+        self.terminal = sys.stdout
+        # La "w" garantisce che il file venga svuotato e sovrascritto ad ogni avvio
+        self.log = open(filename, "w", encoding="utf-8")
+
+    def write(self, message):
+        self.terminal.write(message)  # Stampa sul terminale
+        self.log.write(message)       # Scrive nel file txt
+
+    def flush(self):
+        self.terminal.flush()
+        self.log.flush()
+
+# Reindirizziamo l'output standard verso il nostro Logger
+sys.stdout = Logger(LOG_FILE)
+sys.stderr = sys.stdout
+
+# =============================================================================
+# DEFINIZIONE DELLA PIPELINE
+# =============================================================================
+PIPELINE_SCRIPTS = [
+    ("1. Caricamento e Windowing", os.path.join("src", "main.py")),
+    ("2. Addestramento Random Forest", os.path.join("src", "train_rf.py")),
+    ("3. Addestramento Deep Learning", os.path.join("src", "train_dl.py")),
+    ("4. Simulazione Real-Time", os.path.join("src", "predict.py")),
+    ("5. Test di Robustezza Avversaria", os.path.join("attacks", "advers_attack.py")),
+    ("6. Generazione Grafici PowerPoint", os.path.join("src", "visualize_results.py"))
 ]
 
-def run_pipeline():
-    print("="*90)
-    print("AVVIO PIPELINE AUTOMATIZZATA: CRYPTOJACKING DETECTION")
-    print("="*90)
+def run_script(step_name, script_path):
+    print("\n" + "»" * 70)
+    print(f">> Esecuzione: {step_name}")
+    full_path = os.path.join(BASE_DIR, script_path)
     
-    start_time_total = time.time()
-
-    for step_name, script_path in scripts_to_run:
-        script_full_path = os.path.join(BASE_DIR, script_path)
+    if not os.path.exists(full_path):
+        print(f"\n[ERRORE] File mancante: {full_path}")
+        sys.exit(1)
         
-        if not os.path.exists(script_full_path):
-            print(f"\n[ERRORE CRITICO] File non trovato: {script_path}")
-            print("Interruzione della pipeline.")
-            sys.exit(1)
-
-        print(f"\n>> Esecuzione: {step_name}")
-        print(f">> Script: {script_path}")
-        print("-" * 50)
+    start_time = time.time()
+    
+    # Esegue lo script catturando l'output in tempo reale per mandarlo al Logger
+    process = subprocess.Popen(
+        [sys.executable, full_path],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1
+    )
+    
+    # Legge riga per riga man mano che lo script figlio stampa
+    for line in process.stdout:
+        print(line, end="")
         
-        start_time_step = time.time()
+    process.wait()
+    
+    if process.returncode != 0:
+        print(f"\n[ERRORE] Lo script '{script_path}' ha generato un errore.")
+        sys.exit(1)
         
-        try:
-            # Esegue il comando nel terminale usando lo stesso Python del Virtual Environment
-            result = subprocess.run([sys.executable, script_full_path], check=True)
-            
-            elapsed_step = time.time() - start_time_step
-            print(f"\n[✅ OK] {step_name} completato in {elapsed_step:.1f} secondi.")
-            
-        except subprocess.CalledProcessError as e:
-            # Se uno script va in errore (es. manca un file), si ferma tutto
-            print(f"\n[❌ ERRORE] L'esecuzione di {script_path} è fallita!")
-            print("Interruzione della pipeline per evitare reazioni a catena.")
-            sys.exit(1)
+    print(f"\n[✅ OK] Eseguito in {time.time() - start_time:.1f} secondi.")
 
-    elapsed_total = time.time() - start_time_total
-    print("\n" + "="*90)
-    print(f" PIPELINE COMPLETATA CON SUCCESSO IN {elapsed_total:.1f} SECONDI! ")
-    print("Tutti i modelli sono stati addestrati e i risultati salvati.")
-    print("="*70)
+def main():
+    print("=" * 85)
+    print(f" 🚀 AVVIO PIPELINE: CRYPTOJACKING DETECTION")
+    print(f" 📅 Data e Ora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f" 📝 Questo output verrà salvato in: {LOG_FILE}")
+    print("=" * 85)
+    
+    t0 = time.time()
+    for step, path in PIPELINE_SCRIPTS:
+        run_script(step, path)
+        
+    print("\n" + "=" * 85)
+    print(f" 🎉 PIPELINE COMPLETATA CON SUCCESSO IN {time.time() - t0:.1f} SECONDI!")
+    print("=" * 85 + "\n")
 
 if __name__ == "__main__":
-    run_pipeline()
+    main()
