@@ -1,6 +1,6 @@
 =====================================================================================
  STARTING PIPELINE: CRYPTOJACKING DETECTION
- Date and Time: 2026-04-03 19:08:08
+ Date and Time: 2026-04-03 19:32:19
  This output will be saved to: /home/andreina/Scrivania/Sapienza/2Machine_Learning/LabML/results/pipeline_report.txt
 =====================================================================================
 
@@ -44,7 +44,7 @@ PHASE 1 - DATA LOADING, FILTERING AND FEATURE ENGINEERING
 >> Saving to: /home/andreina/Scrivania/Sapienza/2Machine_Learning/LabML/data/processed_traffic.csv
 [SUCCESS] Phase 1 completed successfully.
 
-[SUCCESS] Completed in 8.4 seconds.
+[SUCCESS] Completed in 7.2 seconds.
 
 ----------------------------------------------------------------------
 >> Executing: 2. Random Forest Training
@@ -104,7 +104,7 @@ Confusion Matrix (Holdout):
 
 [SUCCESS] RF Model saved to: /home/andreina/Scrivania/Sapienza/2Machine_Learning/LabML/models/rf_model.pkl
 
-[SUCCESS] Completed in 22.6 seconds.
+[SUCCESS] Completed in 22.1 seconds.
 
 ----------------------------------------------------------------------
 >> Executing: 3. Deep Learning Training
@@ -121,43 +121,44 @@ Loading shared RF+DL scaler...
 Device: cpu
 Starting training (30 epochs max, patience=7)...
 
-Epoch 01/30 | Train Loss: 0.1479 | Val Loss: 0.1294 | Val Acc: 0.9573
-Epoch 02/30 | Train Loss: 0.1369 | Val Loss: 0.1136 | Val Acc: 0.9728
-Epoch 03/30 | Train Loss: 0.1332 | Val Loss: 0.1102 | Val Acc: 0.9707
-Epoch 04/30 | Train Loss: 0.1300 | Val Loss: 0.0927 | Val Acc: 0.9821
-Epoch 05/30 | Train Loss: 0.1282 | Val Loss: 0.1069 | Val Acc: 0.9696
-Epoch 06/30 | Train Loss: 0.1291 | Val Loss: 0.1130 | Val Acc: 0.9659
-Epoch 07/30 | Train Loss: 0.1275 | Val Loss: 0.1042 | Val Acc: 0.9668
-Epoch 08/30 | Train Loss: 0.1263 | Val Loss: 0.0983 | Val Acc: 0.9779
-Epoch 09/30 | Train Loss: 0.1265 | Val Loss: 0.1053 | Val Acc: 0.9700
-Epoch 10/30 | Train Loss: 0.1260 | Val Loss: 0.1067 | Val Acc: 0.9677
-Epoch 11/30 | Train Loss: 0.1247 | Val Loss: 0.1017 | Val Acc: 0.9729
+Epoch 01/30 | Train Loss: 0.1516 | Val Loss: 0.1246 | Val Acc: 0.9620
+Epoch 02/30 | Train Loss: 0.1359 | Val Loss: 0.1157 | Val Acc: 0.9620
+Epoch 03/30 | Train Loss: 0.1328 | Val Loss: 0.1054 | Val Acc: 0.9725
+Epoch 04/30 | Train Loss: 0.1313 | Val Loss: 0.1117 | Val Acc: 0.9620
+Epoch 05/30 | Train Loss: 0.1298 | Val Loss: 0.1013 | Val Acc: 0.9683
+Epoch 06/30 | Train Loss: 0.1280 | Val Loss: 0.1092 | Val Acc: 0.9663
+Epoch 07/30 | Train Loss: 0.1277 | Val Loss: 0.1027 | Val Acc: 0.9677
+Epoch 08/30 | Train Loss: 0.1269 | Val Loss: 0.1041 | Val Acc: 0.9744
+Epoch 09/30 | Train Loss: 0.1275 | Val Loss: 0.1088 | Val Acc: 0.9682
+Epoch 10/30 | Train Loss: 0.1270 | Val Loss: 0.1084 | Val Acc: 0.9687
+Epoch 11/30 | Train Loss: 0.1243 | Val Loss: 0.1202 | Val Acc: 0.9641
+Epoch 12/30 | Train Loss: 0.1231 | Val Loss: 0.1036 | Val Acc: 0.9673
 
-Early stopping at epoch 11 (no improvement for 7 epochs).
+Early stopping at epoch 12 (no improvement for 7 epochs).
 
-Training time: 83.3s
+Training time: 83.9s
 
 --- Holdout Set Results (unseen during training) ---
               precision    recall  f1-score   support
 
-      Benign     0.9882    0.9919    0.9900     56110
-   Malicious     0.9264    0.8967    0.9113      6419
+      Benign     0.9909    0.9740    0.9824     56110
+   Malicious     0.8024    0.9220    0.8581      6419
 
-    accuracy                         0.9821     62529
-   macro avg     0.9573    0.9443    0.9507     62529
-weighted avg     0.9819    0.9821    0.9820     62529
+    accuracy                         0.9687     62529
+   macro avg     0.8967    0.9480    0.9202     62529
+weighted avg     0.9716    0.9687    0.9696     62529
 
 Confusion Matrix (Holdout):
-[[55653   457]
- [  663  5756]]
-  TN=55653  FP=457  FN=663  TP=5756
-  False Positive Rate: 0.81%
-  False Negative Rate: 10.33%
+[[54653  1457]
+ [  501  5918]]
+  TN=54653  FP=1457  FN=501  TP=5918
+  False Positive Rate: 2.60%
+  False Negative Rate: 7.80%
 
 [SUCCESS] DL Model saved to: /home/andreina/Scrivania/Sapienza/2Machine_Learning/LabML/models/mlp_model.pth
 [SUCCESS] Plots saved to:    /home/andreina/Scrivania/Sapienza/2Machine_Learning/LabML/results/plots
 
-[SUCCESS] Completed in 89.4 seconds.
+[SUCCESS] Completed in 89.3 seconds.
 
 ----------------------------------------------------------------------
 >> Executing: 4. Real-Time Simulation
@@ -172,28 +173,28 @@ Loading models... Done.
 
 ID  | Reality    | Random Forest             | Deep Learning            
 --------------------------------------------------------------------------------
-0   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     64.2% OK 
-1   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     96.4% OK 
+0   | Benign     | [BENIGN]    100.0% OK  | [MALWARE]    51.0% ERR
+1   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     96.6% OK 
 2   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.8% OK 
-3   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     98.7% OK 
+3   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.1% OK 
 4   | Benign     | [BENIGN]     91.0% OK  | [BENIGN]     99.7% OK 
-5   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     96.7% OK 
+5   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     96.9% OK 
 6   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.7% OK 
-7   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.4% OK 
-8   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.4% OK 
-9   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.4% OK 
-10  | Benign     | [BENIGN]    100.0% OK  | [MALWARE]    70.6% ERR
+7   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.3% OK 
+8   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.3% OK 
+9   | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.3% OK 
+10  | Benign     | [BENIGN]    100.0% OK  | [MALWARE]    84.1% ERR
 11  | Malware    | [MALWARE]   100.0% OK  | [MALWARE]   100.0% OK 
 12  | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.8% OK 
-13  | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.4% OK 
-14  | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.4% OK 
-15  | Benign     | [BENIGN]     63.0% OK  | [BENIGN]     65.6% OK 
-16  | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.4% OK 
-17  | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     90.3% OK 
-18  | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.7% OK 
-19  | Benign     | [BENIGN]     98.0% OK  | [BENIGN]     72.8% OK 
+13  | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.3% OK 
+14  | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.3% OK 
+15  | Benign     | [BENIGN]     63.0% OK  | [BENIGN]     71.1% OK 
+16  | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.3% OK 
+17  | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     88.0% OK 
+18  | Benign     | [BENIGN]    100.0% OK  | [BENIGN]     99.8% OK 
+19  | Benign     | [BENIGN]     98.0% OK  | [BENIGN]     71.0% OK 
 --------------------------------------------------------------------------------
-Demo Accuracy: RF=20/20 | DL=19/20
+Demo Accuracy: RF=20/20 | DL=18/20
 [!] On 20 samples this has no statistical value — see full verification below.
 
 =====================================================================================
@@ -222,20 +223,20 @@ Confusion Matrix:
 --- DEEP LEARNING ---
               precision    recall  f1-score   support
 
-      Benign     0.9882    0.9919    0.9900     56110
-   Malicious     0.9264    0.8967    0.9113      6419
+      Benign     0.9909    0.9740    0.9824     56110
+   Malicious     0.8024    0.9220    0.8581      6419
 
-    accuracy                         0.9821     62529
-   macro avg     0.9573    0.9443    0.9507     62529
-weighted avg     0.9819    0.9821    0.9820     62529
+    accuracy                         0.9687     62529
+   macro avg     0.8967    0.9480    0.9202     62529
+weighted avg     0.9716    0.9687    0.9696     62529
 
 Confusion Matrix:
-[[55653   457]
- [  663  5756]]
-  TN=55653  FP=457  FN=663  TP=5756
-  False Positive Rate: 0.81%
-  False Negative Rate: 10.33%
-  AUC-ROC: 0.9890
+[[54653  1457]
+ [  501  5918]]
+  TN=54653  FP=1457  FN=501  TP=5918
+  False Positive Rate: 2.60%
+  False Negative Rate: 7.80%
+  AUC-ROC: 0.9891
 
 =====================================================================================
    COMPARATIVE SUMMARY RF vs DL
@@ -243,14 +244,14 @@ Confusion Matrix:
 
 Metric                      Random Forest   Deep Learning
 ---------------------------------------------------------
-Recall (Malicious)                 0.9623          0.8967   <- RF
-Precision (Malicious)              0.9761          0.9264   <- RF
-F1 (Malicious)                     0.9692          0.9113   <- RF
-AUC-ROC                            0.9946          0.9890   <- RF
+Recall (Malicious)                 0.9623          0.9220   <- RF
+Precision (Malicious)              0.9761          0.8024   <- RF
+F1 (Malicious)                     0.9692          0.8581   <- RF
+AUC-ROC                            0.9946          0.9891   <- RF
 
 [SUCCESS] Simulation completed.
 
-[SUCCESS] Completed in 2.9 seconds.
+[SUCCESS] Completed in 2.8 seconds.
 
 ----------------------------------------------------------------------
 >> Executing: 5. Adversarial Robustness Test
@@ -258,84 +259,84 @@ AUC-ROC                            0.9946          0.9890   <- RF
    ADVERSARIAL ROBUSTNESS TEST — RF vs DL
 ======================================================================
 
-Statistiche benign reali (usate per Mimicry attack):
+Real benign statistics (used for Mimicry attack):
   Time_Mean: 0.008796
   Time_Var: 0.104373
   Length_Mean: 1087.332655
   Length_Var: 273966.772992
 
 ======================================================================
-   TEST ROBUSTEZZA AVVERSARIALE — RF
+   ADVERSARIAL ROBUSTNESS TEST — RF
 ======================================================================
 
-Holdout: 62,529 finestre  (benign=56,110, malicious=6,419)
+Holdout: 62,529 windows  (benign=56,110, malicious=6,419)
 
 Baseline — Recall: 0.9623 | Precision: 0.9761 | F1: 0.9692
 
-Attacco                  Recall     Drop       F1 Stato
+Attack                   Recall     Drop       F1 Status
 -----------------------------------------------------------------
-Timing Jitter  5%        0.9509  +0.0114   0.9632  ✅ Resistente
-Timing Jitter 10%        0.9438  +0.0185   0.9595  ✅ Resistente
-Timing Jitter 20%        0.9355  +0.0268   0.9551  ⚠️  Lieve calo
-Padding  30 bytes        0.8216  +0.1407   0.8906  ❌ Vulnerabile
-Padding  50 bytes        0.7936  +0.1687   0.8735  ❌ Vulnerabile
-Padding 100 bytes        0.4138  +0.5485   0.5758  ❌ Vulnerabile
-Mimicry       20%        0.7769  +0.1854   0.8630  ❌ Vulnerabile
-Mimicry       30%        0.6856  +0.2767   0.8023  ❌ Vulnerabile
-Burst Shaping 20%        0.9433  +0.0190   0.9592  ✅ Resistente
-Burst Shaping 40%        0.9146  +0.0477   0.9438  ⚠️  Lieve calo
+Timing Jitter  5%        0.9509  +0.0114   0.9632  [OK] Resistant
+Timing Jitter 10%        0.9438  +0.0185   0.9595  [OK] Resistant
+Timing Jitter 20%        0.9355  +0.0268   0.9551  [!] Mild Drop
+Padding  30 bytes        0.8216  +0.1407   0.8906  [X] Vulnerable
+Padding  50 bytes        0.7936  +0.1687   0.8735  [X] Vulnerable
+Padding 100 bytes        0.4138  +0.5485   0.5758  [X] Vulnerable
+Mimicry       20%        0.7769  +0.1854   0.8630  [X] Vulnerable
+Mimicry       30%        0.6856  +0.2767   0.8023  [X] Vulnerable
+Burst Shaping 20%        0.9433  +0.0190   0.9592  [OK] Resistant
+Burst Shaping 40%        0.9146  +0.0477   0.9438  [!] Mild Drop
 
-Media — Recall: 0.8180 | Drop medio: +0.1443 (15.0% del baseline)
+Average — Recall: 0.8180 | Avg Drop: +0.1443 (15.0% of baseline)
 
 ======================================================================
-   TEST ROBUSTEZZA AVVERSARIALE — DL
+   ADVERSARIAL ROBUSTNESS TEST — DL
 ======================================================================
 
-Holdout: 62,529 finestre  (benign=56,110, malicious=6,419)
+Holdout: 62,529 windows  (benign=56,110, malicious=6,419)
 
-Baseline — Recall: 0.8967 | Precision: 0.9264 | F1: 0.9113
+Baseline — Recall: 0.9220 | Precision: 0.8024 | F1: 0.8581
 
-Attacco                  Recall     Drop       F1 Stato
+Attack                   Recall     Drop       F1 Status
 -----------------------------------------------------------------
-Timing Jitter  5%        0.8959  +0.0008   0.9109  ✅ Resistente
-Timing Jitter 10%        0.8955  +0.0012   0.9106  ✅ Resistente
-Timing Jitter 20%        0.8899  +0.0069   0.9075  ✅ Resistente
-Padding  30 bytes        0.8891  +0.0076   0.9071  ✅ Resistente
-Padding  50 bytes        0.8860  +0.0107   0.9054  ✅ Resistente
-Padding 100 bytes        0.8828  +0.0139   0.9036  ✅ Resistente
-Mimicry       20%        0.8791  +0.0176   0.9015  ✅ Resistente
-Mimicry       30%        0.8698  +0.0270   0.8962  ⚠️  Lieve calo
-Burst Shaping 20%        0.8241  +0.0726   0.8696  ❌ Vulnerabile
-Burst Shaping 40%        0.6027  +0.2940   0.7201  ❌ Vulnerabile
+Timing Jitter  5%        0.9218  +0.0002   0.8580  [OK] Resistant
+Timing Jitter 10%        0.9220  +0.0000   0.8581  [OK] Resistant
+Timing Jitter 20%        0.9212  +0.0008   0.8576  [OK] Resistant
+Padding  30 bytes        0.9215  +0.0005   0.8578  [OK] Resistant
+Padding  50 bytes        0.9196  +0.0023   0.8568  [OK] Resistant
+Padding 100 bytes        0.9131  +0.0089   0.8533  [OK] Resistant
+Mimicry       20%        0.8976  +0.0243   0.8450  [!] Mild Drop
+Mimicry       30%        0.8841  +0.0379   0.8376  [!] Mild Drop
+Burst Shaping 20%        0.8881  +0.0338   0.8398  [!] Mild Drop
+Burst Shaping 40%        0.8023  +0.1196   0.7907  [X] Vulnerable
 
-Media — Recall: 0.8515 | Drop medio: +0.0452 (5.0% del baseline)
+Average — Recall: 0.8991 | Avg Drop: +0.0228 (2.5% of baseline)
 
 ======================================================================
-   CONFRONTO ROBUSTEZZA: RF vs DL
+   ROBUSTNESS COMPARISON: RF vs DL
 ======================================================================
 
-Modello          Baseline Recall   Drop Medio Robustezza
+Model            Baseline Recall     Avg Drop Robustness
 ------------------------------------------------------------
-Random Forest             0.9623      +0.1443  ❌ Meno robusto
-Deep Learning             0.8967      +0.0452  ✅ Più robusto
+Random Forest             0.9623      +0.1443  [LESS ROBUST]
+Deep Learning             0.9220      +0.0228  [MORE ROBUST]
 
-[✅ OK] Grafico salvato: /home/andreina/Scrivania/Sapienza/2Machine_Learning/LabML/results/plots/adversarial_robustness.png
+[SUCCESS] Plot saved: /home/andreina/Scrivania/Sapienza/2Machine_Learning/LabML/results/plots/adversarial_robustness.png
 
 ======================================================================
-   CONCLUSIONE
+   CONCLUSION
 ======================================================================
 
-[+] Deep Learning è più robusto del Random Forest
-    Drop medio DL: +0.0452 vs RF: +0.1443
+[+] Deep Learning is more robust than Random Forest
+    DL Avg Drop: +0.0228 vs RF: +0.1443
 
-[INFO] Spiegazione:
-    L'MLP apprende rappresentazioni distribuite delle feature.
-    La generalizzazione su combinazioni di feature non viste
-    può renderlo più robusto a perturbazioni locali singole.
+[INFO] Explanation:
+    MLP learns distributed feature representations.
+    Generalization on unseen feature combinations can
+    make it more robust to single local perturbations.
 
-[✅ OK] Test robustezza completato.
+[SUCCESS] Robustness test completed.
 
-[SUCCESS] Completed in 5.6 seconds.
+[SUCCESS] Completed in 5.3 seconds.
 
 ----------------------------------------------------------------------
 >> Executing: 6. Generating Presentation Plots
@@ -354,9 +355,9 @@ Deep Learning             0.8967      +0.0452  ✅ Più robusto
  (Remember that plot 7 is adversarial_robustness.png generated by the attacks)
 ======================================================================
 
-[SUCCESS] Completed in 6.0 seconds.
+[SUCCESS] Completed in 5.9 seconds.
 
 =====================================================================================
- PIPELINE COMPLETED SUCCESSFULLY IN 134.9 SECONDS.
+ PIPELINE COMPLETED SUCCESSFULLY IN 132.6 SECONDS.
 =====================================================================================
 
