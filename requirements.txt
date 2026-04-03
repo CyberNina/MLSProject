@@ -1,0 +1,12 @@
+# --- LIBRERIES ---
+pandas
+numpy
+
+# --- MACHINE LEARNING - DEEP LEARNING ---
+scikit-learn
+torch
+joblib
+
+# --- VISUALIZATION ---
+matplotlib
+seaborn

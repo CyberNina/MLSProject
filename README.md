@@ -1,42 +1,36 @@
 # 🛡️ Cryptojacking Detection via Side-Channel Analysis
-**Studio Comparativo sulla Robustezza: Random Forest vs. Deep Learning**
+**Robustness Comparison: Random Forest vs. Deep Learning**
 
-Questo repository contiene il framework completo sviluppato per la tesi di laurea in Machine Learning. Il progetto si focalizza sul rilevamento di attacchi di **Cryptojacking** (XMRig mining) su dispositivi IoT (Raspberry Pi 4) analizzando esclusivamente metadati di rete, garantendo l'efficacia del monitoraggio anche su traffico cifrato.
+This repository contains a Machine Learning framework developed to detect **Cryptojacking** (XMRig mining) on IoT devices (Raspberry Pi 4). By analyzing solely network metadata (Side-Channel Analysis) and behavioral patterns, this approach effectively identifies malicious activity even in encrypted traffic.
 
+## 📋 Overview
+Traditional signature-based detection fails against encrypted or obfuscated malware. This study proposes a **behavioral approach** using:
+* **Feature Engineering:** 10-packet rolling windows extracting mean and variance of Inter-Arrival Time (IAT) and Packet Length.
+* **Protocol Blindness:** Deliberate exclusion of IPs, ports, and payloads to ensure robust side-channel evaluation.
 
+## 🚀 Automated Pipeline
+Running `run_all.py` sequentially executes:
+1.  **Preprocessing:** Data loading and MAC address filtering.
+2.  **Training:** Trains both a Baseline Random Forest (RF) and a Multi-Layer Perceptron (MLP) with early stopping.
+3.  **Evaluation:** Tests models on a 10% unseen Holdout Set.
+4.  **Adversarial Stress-Test:** Evaluates model resilience against 4 evasion attacks (Padding, Jitter, Mimicry, Burst Shaping).
+5.  **Visualization:** Automatically generates ROC curves, confusion matrices, and robustness plots.
 
-## 📋 Panoramica del Progetto
-Il monitoraggio tradizionale basato su firma (Signature-based) fallisce di fronte a malware che utilizzano protocolli cifrati o tecniche di offuscamento. Questo studio propone un approccio **comportamentale** basato su:
-- **Feature Engineering**: Finestre rolling di 10 pacchetti per estrarre medie e varianze di Inter-Arrival Time (IAT) e Packet Length.
-- **Side-Channel Analysis**: Esclusione deliberata di IP, porte e payload per testare la robustezza del modello in condizioni di "cecità" protocollare.
+## 📊 Key Findings
 
-## 🚀 Struttura della Pipeline (`run_all.py`)
-La pipeline automatizzata esegue sequenzialmente:
-1. **Pre-processing**: Caricamento dati e pulizia MAC address.
-2. **Baseline Training**: Addestramento Random Forest (RF) come benchmark.
-3. **Neural Training**: Addestramento di un Multi-Layer Perceptron (MLP) con Early Stopping.
-4. **Real-time Simulation**: Test comparativo su Holdout Set (10% dei dati mai visti).
-5. **Adversarial Attack**: Stress-test con 4 tipologie di attacchi di evasione (Padding, Jitter, Mimicry, Burst Shaping).
-6. **Visualizzazione**: Generazione automatica di matrici di confusione, curve ROC e grafici di robustezza.
+| Metric | Random Forest (Baseline) | Deep Learning (MLP) |
+| :--- | :--- | :--- |
+| **Base Recall** | ~96.2% | ~91.8% |
+| **Under Attack** | ❌ Vulnerable | ✅ Robust |
+| **AUC-ROC** | 0.9946 | 0.9905 |
 
-## 📊 Risultati e Conclusioni
-Dalle analisi condotte, emergono differenze fondamentali nell'approccio alla sicurezza:
+**The Security Trade-off:** While **Random Forest** excels in static, attack-free conditions, it is extremely fragile against evasion tactics (e.g., recall plummets to 41% under *Packet Padding*). Conversely, the **Deep Learning** model maintains a recall of over 90% even under severe adversarial attacks, making it the most reliable choice for real-world, hostile deployments.
 
-| Metrica (Malware) | Random Forest (Baseline) | Deep Learning (MLP) |
-|-------------------|--------------------------|----------------------|
-| **Recall (Base)** | ~96.2%                   | ~91.8%               |
-| **Resilienza** | ❌ Vulnerabile (Drop 15%) | ✅ Robusto (Drop 3%)  |
-| **AUC-ROC** | 0.9946                   | 0.9905               |
+## 🛠️ Quick Start
 
-### Il "Trade-off" della Sicurezza
-Mentre il **Random Forest** appare superiore in condizioni statiche, lo studio dimostra che è estremamente fragile di fronte a tecniche di evasione come il *Packet Padding* (dove la Recall crolla al 41%). Il **Deep Learning**, grazie alla capacità di apprendere rappresentazioni distribuite, mantiene una Recall superiore al 90% anche sotto attacco, dimostrandosi la scelta più affidabile per un deployment in ambienti ostili.
-
-
-
-## 🛠️ Requisiti e Installazione
 ```bash
-# Installa le dipendenze
+# Install dependencies
 pip install -r requirements.txt
 
-# Esegui l'intero studio
+# Run the entire pipeline
 python3 run_all.py

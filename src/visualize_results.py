@@ -9,10 +9,10 @@ import torch
 import torch.nn as nn
 import warnings
 
-# Ignora i warning stilistici di seaborn
+# Ignore stylistic warnings from seaborn
 warnings.filterwarnings('ignore')
 
-# --- CONFIGURAZIONE PERCORSI ---
+# --- PATH CONFIGURATION ---
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_FULL = os.path.join(BASE_DIR, "data", "processed_traffic.csv")
 DATA_HOLD = os.path.join(BASE_DIR, "data", "holdout_dataset.csv")
@@ -23,7 +23,7 @@ IMG_DIR   = os.path.join(BASE_DIR, "results", "plots")
 
 os.makedirs(IMG_DIR, exist_ok=True)
 
-# --- ARCHITETTURA RETE NEURALE ---
+# --- NEURAL NETWORK ARCHITECTURE ---
 class SimpleMLP(nn.Module):
     def __init__(self, input_dim):
         super(SimpleMLP, self).__init__()
@@ -39,17 +39,17 @@ class SimpleMLP(nn.Module):
     def forward(self, x):
         return self.network(x)
 
-# Colori coordinati per la presentazione
-COLOR_RF = '#3498db'  # Blu
-COLOR_DL = '#e74c3c'  # Rosso
-COLOR_BENIGN = '#2ecc71' # Verde
-COLOR_MALWARE = '#e74c3c' # Rosso
+# Coordinated colors for the presentation
+COLOR_RF = '#3498db'     # Blue
+COLOR_DL = '#e74c3c'     # Red
+COLOR_BENIGN = '#2ecc71' # Green
+COLOR_MALWARE = '#e74c3c'# Red
 
 # =============================================================================
-# 1. GRAFICO CONTESTO: Distribuzione Dati (Donut Chart)
+# 1. CONTEXT PLOT: Data Distribution (Donut Chart)
 # =============================================================================
 def plot_data_distribution():
-    print(">> Generazione: 1. Distribuzione Dati (Donut Chart)...")
+    print(">> Generating: 1. Data Distribution (Donut Chart)...")
     if not os.path.exists(DATA_FULL):
         return
 
@@ -57,7 +57,7 @@ def plot_data_distribution():
     counts = df['Label'].value_counts()
     
     plt.figure(figsize=(8, 6))
-    labels = ['Benign (Navigazione, Video...)', 'Malicious (Cryptojacking)']
+    labels = ['Benign (Web Browsing, Video...)', 'Malicious (Cryptojacking)']
     sizes = [counts.get(0, 0), counts.get(1, 0)]
     colors = [COLOR_BENIGN, COLOR_MALWARE]
     explode = (0.05, 0)
@@ -66,15 +66,15 @@ def plot_data_distribution():
             shadow=False, startangle=140, textprops={'fontsize': 12, 'weight': 'bold'},
             wedgeprops=dict(width=0.4, edgecolor='w'))
     
-    plt.title('Distribuzione del Traffico di Rete (Ground Truth)', fontsize=16, weight='bold')
+    plt.title('Network Traffic Distribution (Ground Truth)', fontsize=16, weight='bold')
     plt.savefig(os.path.join(IMG_DIR, "1_data_distribution.png"), dpi=300, bbox_inches='tight')
     plt.close()
 
 # =============================================================================
-# 2. GRAFICO ANALISI: Feature Importance (Horizontal Bar)
+# 2. ANALYSIS PLOT: Feature Importance (Horizontal Bar)
 # =============================================================================
 def plot_feature_importance():
-    print(">> Generazione: 2. Feature Importance Random Forest...")
+    print(">> Generating: 2. Random Forest Feature Importance...")
     if not os.path.exists(MODEL_RF) or not os.path.exists(DATA_HOLD):
         return
 
@@ -88,8 +88,8 @@ def plot_feature_importance():
     plt.figure(figsize=(10, 6))
     plt.barh(range(len(indices)), importances[indices], color='#9b59b6', align='center')
     plt.yticks(range(len(indices)), [features[i] for i in indices], fontsize=12)
-    plt.xlabel('Importanza Relativa (Gini Impurity)', fontsize=12, weight='bold')
-    plt.title('Feature Importance: Cosa guarda l\'algoritmo?', fontsize=16, weight='bold')
+    plt.xlabel('Relative Importance (Gini Impurity)', fontsize=12, weight='bold')
+    plt.title('Feature Importance: What is the algorithm looking at?', fontsize=16, weight='bold')
     
     for i, v in enumerate(importances[indices]):
         plt.text(v + 0.01, i, f"{v:.1%}", va='center', fontsize=11, weight='bold')
@@ -100,10 +100,10 @@ def plot_feature_importance():
     plt.close()
 
 # =============================================================================
-# 3. GRAFICO TRAPPOLA: Baseline Comparison (Bar Chart)
+# 3. PITFALL PLOT: Baseline Comparison (Bar Chart)
 # =============================================================================
 def plot_baseline_comparison():
-    print(">> Generazione: 3. Confronto Metriche Baseline...")
+    print(">> Generating: 3. Baseline Metrics Comparison...")
     try:
         df = pd.read_csv(DATA_HOLD)
         rf = joblib.load(MODEL_RF)
@@ -141,8 +141,8 @@ def plot_baseline_comparison():
         plt.text(i - width/2, v_rf + 0.01, f"{v_rf:.1%}", ha='center', weight='bold')
         plt.text(i + width/2, v_dl + 0.01, f"{v_dl:.1%}", ha='center', weight='bold')
 
-    plt.ylabel('Punteggio', fontsize=12, weight='bold')
-    plt.title('Performance in "Tempo di Pace" (Baseline senza attacchi)', fontsize=16, weight='bold')
+    plt.ylabel('Score', fontsize=12, weight='bold')
+    plt.title('Peacetime Performance (Baseline without attacks)', fontsize=16, weight='bold')
     plt.xticks(x, labels, fontsize=12)
     plt.ylim(0, 1.1)
     plt.legend(loc='lower right', fontsize=12)
@@ -152,10 +152,10 @@ def plot_baseline_comparison():
     plt.close()
 
 # =============================================================================
-# 4. GRAFICO SCIENTIFICO: Curva ROC e AUC
+# 4. SCIENTIFIC PLOT: ROC Curve and AUC
 # =============================================================================
 def plot_roc_curve():
-    print(">> Generazione: 4. Curva ROC...")
+    print(">> Generating: 4. ROC Curve...")
     try:
         df = pd.read_csv(DATA_HOLD)
         rf = joblib.load(MODEL_RF)
@@ -190,9 +190,9 @@ def plot_roc_curve():
     
     plt.xlim([-0.01, 1.0])
     plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate (Traffico benigno scambiato per malware)', fontsize=12, weight='bold')
-    plt.ylabel('True Positive Rate (Malware correttamente rilevato)', fontsize=12, weight='bold')
-    plt.title('Curva ROC - Capacità di Separazione delle Classi', fontsize=16, weight='bold')
+    plt.xlabel('False Positive Rate (Benign traffic classified as malware)', fontsize=12, weight='bold')
+    plt.ylabel('True Positive Rate (Malware correctly detected)', fontsize=12, weight='bold')
+    plt.title('ROC Curve - Class Separation Capability', fontsize=16, weight='bold')
     plt.legend(loc="lower right", fontsize=11)
     plt.grid(alpha=0.3)
     
@@ -200,10 +200,10 @@ def plot_roc_curve():
     plt.close()
 
 # =============================================================================
-# 5. MATRICE DI CONFUSIONE RANDOM FOREST
+# 5. RANDOM FOREST CONFUSION MATRIX
 # =============================================================================
 def plot_confusion_matrix_rf():
-    print(">> Generazione: 5. Matrice di Confusione Random Forest...")
+    print(">> Generating: 5. Random Forest Confusion Matrix...")
     try:
         df = pd.read_csv(DATA_HOLD)
         clf = joblib.load(MODEL_RF)
@@ -220,23 +220,23 @@ def plot_confusion_matrix_rf():
     labels = ['Benign', 'Malicious']
     
     plt.figure(figsize=(7, 5))
-    # Colore in tinta con il RF (Blues)
+    # Color matched with RF (Blues)
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
                 xticklabels=labels, yticklabels=labels,
                 annot_kws={"size": 16, "weight": "bold"})
 
-    plt.ylabel('Realtà (True Label)', fontsize=12, weight='bold')
-    plt.xlabel('Predizione (Predicted Label)', fontsize=12, weight='bold')
-    plt.title('Matrice di Confusione - Random Forest', fontsize=16, weight='bold')
+    plt.ylabel('Reality (True Label)', fontsize=12, weight='bold')
+    plt.xlabel('Prediction (Predicted Label)', fontsize=12, weight='bold')
+    plt.title('Confusion Matrix - Random Forest', fontsize=16, weight='bold')
 
     plt.savefig(os.path.join(IMG_DIR, "5_confusion_matrix_rf.png"), dpi=300, bbox_inches='tight')
     plt.close()
 
 # =============================================================================
-# 6. MATRICE DI CONFUSIONE DEEP LEARNING (NUOVA)
+# 6. DEEP LEARNING CONFUSION MATRIX
 # =============================================================================
 def plot_confusion_matrix_dl():
-    print(">> Generazione: 6. Matrice di Confusione Deep Learning...")
+    print(">> Generating: 6. Deep Learning Confusion Matrix...")
     try:
         df = pd.read_csv(DATA_HOLD)
         scaler = joblib.load(SCALER)
@@ -261,14 +261,14 @@ def plot_confusion_matrix_dl():
     labels = ['Benign', 'Malicious']
     
     plt.figure(figsize=(7, 5))
-    # Colore in tinta con il DL (Reds)
+    # Color matched with DL (Reds)
     sns.heatmap(cm, annot=True, fmt='d', cmap='Reds', 
                 xticklabels=labels, yticklabels=labels,
                 annot_kws={"size": 16, "weight": "bold"})
 
-    plt.ylabel('Realtà (True Label)', fontsize=12, weight='bold')
-    plt.xlabel('Predizione (Predicted Label)', fontsize=12, weight='bold')
-    plt.title('Matrice di Confusione - Deep Learning', fontsize=16, weight='bold')
+    plt.ylabel('Reality (True Label)', fontsize=12, weight='bold')
+    plt.xlabel('Prediction (Predicted Label)', fontsize=12, weight='bold')
+    plt.title('Confusion Matrix - Deep Learning', fontsize=16, weight='bold')
 
     plt.savefig(os.path.join(IMG_DIR, "6_confusion_matrix_dl.png"), dpi=300, bbox_inches='tight')
     plt.close()
@@ -276,7 +276,7 @@ def plot_confusion_matrix_dl():
 
 def main():
     print("=" * 70)
-    print(" 📊 GENERATORE DI GRAFICI PER PRESENTAZIONE POWERPOINT")
+    print(" POWERPOINT PRESENTATION PLOT GENERATOR")
     print("=" * 70)
     
     plot_data_distribution()
@@ -284,12 +284,12 @@ def main():
     plot_baseline_comparison()
     plot_roc_curve()
     plot_confusion_matrix_rf()
-    plot_confusion_matrix_dl()  # <-- Aggiunta!
+    plot_confusion_matrix_dl()
     
     print("=" * 70)
-    print(f" 🎉 Tutti i grafici sono stati generati e salvati in: {IMG_DIR}")
-    print(" I file sono numerati da 1 a 6 per seguire l'ordine della tua tesi.")
-    print(" (Ricorda che il grafico 7 è adversarial_robustness.png generato dagli attacchi)")
+    print(f" [SUCCESS] All plots have been generated and saved to: {IMG_DIR}")
+    print(" The files are numbered from 1 to 6 to follow the order of your thesis.")
+    print(" (Remember that plot 7 is adversarial_robustness.png generated by the attacks)")
     print("=" * 70)
 
 if __name__ == "__main__":
