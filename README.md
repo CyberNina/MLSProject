@@ -16,21 +16,31 @@ The automated pipeline transforms raw network captures into a structured dataset
 5.  **Scaling:** A shared `StandardScaler` is fitted *only* on the training set to prevent data leakage.
 
 ## Project Structure
-.
-├── run_all.py                # Pipeline orchestrator
+```text
+LabML/
+├── run_all.py                  # Main pipeline orchestrator
 ├── src/
-│   ├── main.py               # Data ingestion & feature engineering
-│   ├── train_rf.py           # Random Forest training & scaler serialization
-│   ├── train_dl.py           # MLP training via PyTorch (Early Stopping)
-│   ├── predict.py            # Comparative evaluation on holdout set
-│   └── visualize_results.py  # Statistical visualization & plotting
+│   ├── main.py                 # Phase 1: data loading & feature engineering
+│   ├── train_rf.py             # Phase 2: Random Forest training + shared scaler
+│   ├── train_dl.py             # Phase 3: Deep Learning (MLP) training
+│   ├── predict.py              # Phase 4: real-time simulation & RF vs DL comparison
+│   └── visualize_results.py    # Phase 5: plot generation for thesis/presentation
 ├── attacks/
-│   └── advers_attack.py      # Adversarial perturbation engine
+│   └── advers_attack.py        # Phase 6: adversarial robustness evaluation
 ├── utils/
-│   └── loader.py             # MAC filtering and windowing logic
-├── data/                     # Local storage for CSV captures and splits
-├── models/                   # Serialized model weights and scalers
-└── results/                  # Performance metrics and ROC/Confusion matrices
+│   └── loader.py               # Core data loading, MAC filtering, windowing
+├── data/
+│   ├── benign/                 # Raw benign captures (Wireshark CSV export)
+│   ├── malicious/              # Raw malicious captures (Wireshark CSV export)
+│   ├── processed_traffic.csv   # Output of Phase 1 (625,287 windows, shuffled)
+│   ├── dev_set.csv             # 90% split for training
+│   └── holdout_dataset.csv     # 10% holdout, never seen during training
+├── models/
+│   ├── rf_model.pkl            # Trained Random Forest
+│   ├── mlp_model.pth           # Trained MLP (best epoch via early stopping)
+│   └── scaler.pkl              # Shared StandardScaler (fitted on RF train set only)
+└── results/
+    └── plots/                  # All generated figures (confusion matrices, ROC, etc.)
 
 ## Dataset Summary
 The final processed dataset consists of **625,287 windows**.
